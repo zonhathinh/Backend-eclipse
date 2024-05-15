@@ -1,0 +1,137 @@
+package com.cgm.hello_web_app.controller;
+
+
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.cgm.hello_web_app.dao.ProductDAO;
+import com.cgm.hello_web_app.dao.ProductDao2;
+import com.cgm.hello_web_app.eitities.Product;
+import com.cgm.hello_web_app.eitities.Product1;
+/**
+ * Servlet implementation class indexshopcontroller1
+ */
+@WebServlet(urlPatterns = {"/shop", "/shop2", "/shop3", "/shop4", "/shop5","/newproduct","/oldproduct","/recentproduct","/detailproduct"})
+public class indexshopcontroller1 extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private HttpServletRequest request;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public indexshopcontroller1() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String uri = request.getRequestURI();
+        if (uri.endsWith("/shop")) {
+            handleShop1(request, response);
+        } else if (uri.endsWith("/shop2")) {
+            handleShop2(request, response);
+        
+        } else if (uri.endsWith("/shop3")) {
+                handleShop3(request, response);
+        } else if (uri.endsWith("/shop4")) {
+            handleShop4(request, response);
+        } else if (uri.endsWith("/shop5")) {
+            handleShop5(request, response);
+        }else if (uri.endsWith("/newproduct")) {
+            allnewproduct(request, response);}
+        else if (uri.endsWith("/oldproduct")) {
+            alloldproduct(request, response);}
+        else if (uri.endsWith("/recentproduct")) {
+            allrecentproduct(request, response);}
+        else if (uri.endsWith("/detailproduct")) {
+            allrecentproduct(request, response);}
+        else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
+    private void handleShop1(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ProductDao2 productDAO1 = new ProductDao2();
+        ArrayList<Product> latestProductList = productDAO1.getLatestProductList();
+        request.setAttribute("productList1", latestProductList);
+        
+        RequestDispatcher rd = request.getRequestDispatcher("/shop.jsp");
+        rd.forward(request, response);
+    }
+
+    private void handleShop2(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ProductDao2 productDAO1 = new ProductDao2();
+        ArrayList<Product> latestProductList1 = productDAO1.getLatestProductList2();
+        request.setAttribute("productList2", latestProductList1);
+        
+        RequestDispatcher rd = request.getRequestDispatcher("/shop2.jsp");
+        rd.forward(request, response);
+    }
+    private void handleShop3(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ProductDao2 productDAO1 = new ProductDao2();
+        ArrayList<Product> latestProductList1 = productDAO1.getLatestProductList3();
+        request.setAttribute("productList3", latestProductList1);
+        
+        RequestDispatcher rd = request.getRequestDispatcher("/shop2.jsp");
+        rd.forward(request, response);
+    }
+    private void handleShop4(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ProductDao2 productDAO1 = new ProductDao2();
+        ArrayList<Product> latestProductList1 = productDAO1.getLatestProductList4();
+        request.setAttribute("productList4", latestProductList1);
+        
+        RequestDispatcher rd = request.getRequestDispatcher("/shop2.jsp");
+        rd.forward(request, response);
+    }
+    private void handleShop5(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ProductDao2 productDAO1 = new ProductDao2();
+        ArrayList<Product> latestProductList1 = productDAO1.getLatestProductList5();
+        request.setAttribute("productList5", latestProductList1);
+        
+        RequestDispatcher rd = request.getRequestDispatcher("/shop2.jsp");
+        rd.forward(request, response);
+    }
+    private void allnewproduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ProductDAO productDAO1 = new ProductDAO();
+        ArrayList<Product1> latestProductList1 = productDAO1.getAllNewProduct();
+        request.setAttribute("allnewbook", latestProductList1);
+        
+        RequestDispatcher rd = request.getRequestDispatcher("/all_new.jsp");
+        rd.forward(request, response);
+    }
+    private void alloldproduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ProductDAO productDAO1 = new ProductDAO();
+        ArrayList<Product1> latestProductList1 = productDAO1.getAllOldProduct();
+        request.setAttribute("alloldbook", latestProductList1);
+        
+        RequestDispatcher rd = request.getRequestDispatcher("/all_old.jsp");
+        rd.forward(request, response);
+    }
+    private void allrecentproduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ProductDAO productDAO1 = new ProductDAO();
+        ArrayList<Product1> latestProductList1 = productDAO1.getAllrecentProduct();
+        request.setAttribute("allrecentbook", latestProductList1);
+        
+        RequestDispatcher rd = request.getRequestDispatcher("/all_recent.jsp");
+        rd.forward(request, response);
+    }
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}

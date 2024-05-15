@@ -1,0 +1,7 @@
+INDEX VERSION 1.134
+C:\laptrinhlop\resfulweb\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2963266302.index
+\eclipse_webapp_BK\src\main\java
+C:\laptrinhlop\resfulweb\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1310669125.index
+\heii\src\main\resources
+C:\laptrinhlop\resfulweb\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2195036047.index
+\HelloWebApp\src\main\resources

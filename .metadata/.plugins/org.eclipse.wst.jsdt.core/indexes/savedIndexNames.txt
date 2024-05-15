@@ -1,0 +1,9 @@
+INDEX VERSION 1.4+C:\laptrinhlop\resfulweb\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3261650336.index
+3668304100.index
+2195036047.index
+186518242.index
+737404249.index
+4225675009.index
+2249723379.index
+1721142406.index

@@ -1,0 +1,418 @@
+package com.cgm.hello_web_app.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import com.cgm.hello_web_app.eitities.Cart;
+import com.cgm.hello_web_app.eitities.Product;
+import com.cgm.hello_web_app.eitities.Product1;
+import com.cgm.hello_web_app.eitities.User;
+
+public class ProductDAO {
+    private Connection conn;
+    
+    public ProductDAO(Connection connection) {
+        this.conn = connection;
+    }
+
+    public ProductDAO() {
+        try {
+            conn = DbCon.getConnection();
+            
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public ArrayList<Product> getLatestProductList() {
+        ArrayList<Product> list = new ArrayList<>();
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT * FROM danhsachdienthoai.listdt";
+            pst = conn.prepareStatement(sql);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+            	int id=rs.getInt("id");
+                String name = rs.getString("name");
+                double price = rs.getDouble("price");
+                String image = rs.getString("image");
+                Product product = new Product(id,image, name, price);
+                list.add(product);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pst != null) pst.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+    
+    
+    
+    //Mới
+    //add
+    public Product1 addproduct(String name, double price, String category, String status, String image,String email) {
+    	Product1 product = null;
+    	try (PreparedStatement pst = conn.prepareStatement("INSERT INTO listdt1(name,price, category, status,image,email) VALUES (?, ?, ?,?,?,?)");
+) {
+            pst.setString(1, name);
+            pst.setDouble(2, price);
+            pst.setString(3, category);
+            pst.setString(4, status);
+            pst.setString(5, image);
+            pst.setString(6, email);
+            pst.executeUpdate();
+            try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int id = generatedKeys.getInt(1);
+                    // Bạn có thể sử dụng id ở đây nếu cần	
+                    product = new Product1(id, name, price, category, status, image, email);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Xử lý ngoại lệ cụ thể ở đây (ví dụ: logger.error("Error occurred while signing up: " + e.getMessage());)
+       
+        }
+    	return product;
+    }
+    //allproduct
+    public ArrayList<Product1> getAdProductList() {
+        ArrayList<Product1> list = new ArrayList<>();
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT * FROM danhsachdienthoai.listdt1";
+            pst = conn.prepareStatement(sql);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+            	int id=rs.getInt("id");
+            	 String name = rs.getString("name");
+                String image = rs.getString("image");
+                double price = rs.getDouble("price");
+                String category = rs.getString("category");
+                String status = rs.getString("status");
+                String email = rs.getString("email");
+                Product1 product = new Product1(id,name, price, category, status, image, email);
+                list.add(product);
+                
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pst != null) pst.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+    //lay id cho edit
+    public Product1 getProductId(int id) {
+    	Product1 p=null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+    	try {
+    		 String sql = "SELECT * FROM danhsachdienthoai.listdt1 WHERE id=?";
+    		 pst = conn.prepareStatement(sql);
+    		 pst.setInt(1,id); 
+             rs = pst.executeQuery();
+             while (rs.next()) {
+             	int id1=rs.getInt("id");
+             	 String name = rs.getString("name");
+                 String image = rs.getString("image");
+                 double price = rs.getDouble("price");
+                 String category = rs.getString("category");
+                 String status = rs.getString("status");
+                 String email = rs.getString("email");
+                 
+                 p = new Product1(id1, name, price, category, status, image, email);
+                 
+             }
+    	}catch(Exception e){
+    		e.printStackTrace();
+    		
+    	}
+    	return p;
+    }
+    //update
+    public boolean updateEditProduct(Product1 p) {
+    	 PreparedStatement pst = null;
+      
+    	try {
+    		 String sql = "update danhsachdienthoai.listdt1 set name=?,price=?,status=? WHERE id=?";
+    		 pst = conn.prepareStatement(sql);
+    		 pst.setString(1, p.getName());
+    	        pst.setDouble(2, p.getPrice());
+    	        pst.setString(3, p.getStatus());
+    	        pst.setInt(4, p.getId());           
+    	        int i = pst.executeUpdate();
+
+    	        // Trả về true nếu có bản ghi được cập nhật thành công
+    	        return i > 0;
+    	}catch(Exception e){
+    		e.printStackTrace();
+    		
+    	}
+    	return false;
+    }
+    public boolean deleteProduct(int id) {
+   	 PreparedStatement pst = null;
+     
+   	try {
+   		 String sql = "delete from danhsachdienthoai.listdt1  WHERE id=?";
+   		 pst = conn.prepareStatement(sql);
+   		 
+   	        pst.setInt(1, id);           
+   	        int i = pst.executeUpdate();
+
+   	        // Trả về true nếu có bản ghi được cập nhật thành công
+   	        return i > 0;
+   	}catch(Exception e){
+   		e.printStackTrace();
+   		
+   	}
+   	return false;
+   }
+    //NewSanpham
+    
+    public ArrayList<Product1> getNewProduct() {
+    	Product1 p=null;
+        ArrayList<Product1> list = new ArrayList<>();
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT * FROM danhsachdienthoai.listdt1 where category=? and status=? order by id DESC";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1,"New-product");
+            pst.setString(2,"Active");
+            rs = pst.executeQuery();
+            int i=1;
+            while (rs.next() &&i<=4) {
+            	int id1=rs.getInt("id");
+            	 String name = rs.getString("name");
+                String image = rs.getString("image");
+                double price = rs.getDouble("price");
+                String category = rs.getString("category");
+                String status = rs.getString("status");
+                String email = rs.getString("email");
+                
+                p = new Product1(id1, name, price, category, status, image, email);
+                list.add(p); 
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pst != null) pst.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+    public ArrayList<Product1> getOldProduct() {
+    	Product1 p=null;
+        ArrayList<Product1> list = new ArrayList<>();
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT * FROM danhsachdienthoai.listdt1 where category=? and status=? order by id ASC";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1,"Old-product");
+            pst.setString(2,"Active");
+            rs = pst.executeQuery();
+            int i=1;
+            while (rs.next() &&i<=4) {
+            	int id1=rs.getInt("id");
+            	 String name = rs.getString("name");
+                String image = rs.getString("image");
+                double price = rs.getDouble("price");
+                String category = rs.getString("category");
+                String status = rs.getString("status");
+                String email = rs.getString("email");
+                
+                p = new Product1(id1, name, price, category, status, image, email);
+                list.add(p); 
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pst != null) pst.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+    //Gần đây sp
+    public ArrayList<Product1> getrecentProduct() {
+    	Product1 p=null;
+        ArrayList<Product1> list = new ArrayList<>();
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT * FROM danhsachdienthoai.listdt1 where status=? order by id DESC";
+            pst = conn.prepareStatement(sql);
+            pst.setString(1,"Active");
+            rs = pst.executeQuery();
+            int i=1;
+            while (rs.next() &&i<=4) {
+            	int id1=rs.getInt("id");
+            	 String name = rs.getString("name");
+                String image = rs.getString("image");
+                double price = rs.getDouble("price");
+                String category = rs.getString("category");
+                String status = rs.getString("status");
+                String email = rs.getString("email");
+                
+                p = new Product1(id1, name, price, category, status, image, email);
+                list.add(p); 
+                i++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pst != null) pst.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //cart 
+    
+    // Other methods...
+    
+    //cart
+    public ArrayList<Cart> getCartProducts(ArrayList<Cart> cartlist) {
+    	ArrayList<Cart> cartadd = new ArrayList<>();
+        User user = null;
+		/* chuyen tu eclip sang sql */
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+        	if(cartlist.size()>0) {
+        		for(Cart item:cartlist) {
+            String sql = "SELECT * FROM danhsachdienthoai.listdt WHERE id=?";
+			/* nem sql vao sqll sever */
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1,item.getId());
+            
+            rs = pst.executeQuery();
+			/* lay du lieu cua csd */
+            while (rs.next()) {
+               Cart cart1 = new Cart();
+               cart1.setId(rs.getInt("id"));
+               cart1.setName(rs.getString("name"));      
+               cart1.setImage(rs.getString("image"));
+               cart1.setPrice(rs.getDouble("price")*item.getQuantity());
+               cart1.setQuantity(item.getQuantity());
+               cartadd.add(cart1);
+            }
+        	}}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pst != null) pst.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return cartadd;
+    }
+    
+    
+    public double getTotalPrice(ArrayList<Cart> cartlist) {
+    	double sum=0;
+    	PreparedStatement pst =null;
+    	ResultSet rs=null;
+    	try {
+    		
+    		if(cartlist.size()>0) {
+    			for(Cart item:cartlist){
+    				String sql="select price from listdt WHERE id = ?";
+    				 pst=this.conn.prepareStatement(sql);
+    				pst.setInt(1,item.getId());
+    				 rs=pst.executeQuery();
+    				 while(rs.next()) {
+    					 sum+=rs.getDouble("price")*item.getQuantity();
+    				 }
+    			}
+    		}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+    	
+    	
+    	
+    	
+    	return sum;
+    	
+    }
+    
+    
+    
+    
+    public void closeConnection() {
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
